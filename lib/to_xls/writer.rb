@@ -36,9 +36,15 @@ module ToXls
         row_index = 0
 
         if headers_should_be_included?
-          apply_format_to_row(sheet.row(0), @header_format)
-          fill_row(sheet.row(0), headers)
-          row_index = 1
+          if multiple_headers?
+            headers.each do |header_row|
+              fill_headers(sheet, header_row, row_index)
+              row_index += 1
+            end
+          else
+            fill_headers(sheet, headers, row_index)
+            row_index += 1
+          end
         end
 
         @array.each do |model|
@@ -79,6 +85,9 @@ module ToXls
       @options[:headers] != false
     end
 
+    def multiple_headers?
+      headers_should_be_included? && @options[:headers] && headers.all? {|h| h.is_a? Array}
+    end
 private
 
     def apply_format_to_row(row, format)
@@ -87,6 +96,11 @@ private
 
     def create_format(name)
       Spreadsheet::Format.new @options[name] if @options.has_key? name
+    end
+
+    def fill_headers(sheet, headers, row_index)
+      apply_format_to_row(sheet.row(row_index), @header_format)
+      fill_row(sheet.row(row_index), headers)
     end
 
     def fill_row(row, column, model=nil)
