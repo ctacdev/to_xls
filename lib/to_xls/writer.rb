@@ -35,16 +35,15 @@ module ToXls
       if columns.any?
         row_index = 0
 
-        if headers_should_be_included?
-          if multiple_headers?
-            headers.each do |header_row|
-              fill_headers(sheet, header_row, row_index)
-              row_index += 1
-            end
-          else
-            fill_headers(sheet, headers, row_index)
+
+        if multiple_headers_should_be_included?
+          headers.each do |header_row|
+            fill_headers(sheet, header_row, row_index)
             row_index += 1
           end
+        elsif headers_should_be_included?
+          fill_headers(sheet, headers, row_index)
+          row_index += 1
         end
 
         @array.each do |model|
@@ -85,8 +84,12 @@ module ToXls
       @options[:headers] != false
     end
 
-    def multiple_headers?
-      headers_should_be_included? && @options[:headers] && headers.all? {|h| h.is_a? Array}
+    def multiple_headers_should_be_included?
+      return false unless headers_should_be_included? && @options[:multiple_headers] && @options[:headers]
+      unless headers.all? {|h| h.is_a? Array}
+        raise ArgumentError, ":headers (#{@headers.inspect}) must be an array of arrays"
+      end
+      true
     end
 private
 
