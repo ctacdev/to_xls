@@ -77,10 +77,10 @@ describe ToXls::Writer do
       )
     end
 
-    it "uses multiple headers if the option is set and headers is an array of arrays" do
+    it "uses multiple header rows if the option is set and headers is an array of arrays" do
       xls = make_book( mock_users,
         :columns => [:name, :email, :age],
-        :multiple_headers => true,
+        :multiple_header_rows => true,
         :headers => [['Info', '', 'Other Info'], ['Nombre', 'Correo', 'Edad']]
       )
       check_sheet( xls.worksheets.first,
@@ -93,11 +93,11 @@ describe ToXls::Writer do
       )
     end
 
-    it "throws an error if multiple headers option is set but headers is not an array of arrays" do
+    it "throws an error if multiple header rows option is set but headers is not an array of arrays" do
       lambda {
         make_book( mock_users,
           :columns => [:name, :email, :age],
-          :multiple_headers => true,
+          :multiple_header_rows => true,
           :headers => [['Info', '', 'Other Info'], 'Nombre', 'Correo', 'Edad']
       ) }.should raise_error
     end
