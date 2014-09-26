@@ -14,6 +14,7 @@ It is (very slightly) oriented towards exporting ActiveRecord sets, but it can b
   @users.to_xls(:columns => [:name, :role]) # include only these columns, on this order
   @users.to_xls(:columns => [:name, {:company => [:name, :address]}]) # able to pick associations/called methods
   @users.to_xls(:columns => [:name, {:company => [:name, :address]}], :headers => ['Name', 'Company', 'Address']) # provide better names for the associated columns
+  @users.to_xls(:columns => [:name, {:company => [:name, :address]}], :headers => [['Personal', 'Company'], ['Name', 'Name', 'Address']], :multiple_header_rows => true) # use multiple rows of headers
 
 == Format
 
